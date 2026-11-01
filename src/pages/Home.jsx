@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Scan, 
   MapPin, 
@@ -13,6 +14,10 @@ import {
   ArrowRight,
   MessageCircle,
   Play,
+  Pause,
+  Video,
+  Quote,
+  FileText,
   Instagram,
   Linkedin,
   Plus,
@@ -33,6 +38,72 @@ export default function Home({ onOpenScanner }) {
   // FAQ accordion state
   const [openFaq, setOpenFaq] = useState(0); // 1st FAQ open by default as in screenshot
   const [callbackSent, setCallbackSent] = useState(false);
+  
+  // Authentic Indian Street Dog Video Streams for Hero Background
+  const HERO_VIDEO_FEEDS = [
+    {
+      id: 'urban-street',
+      shortLabel: 'CAM 01',
+      name: 'Urban Street Indie',
+      src: '/videos/curious-street-dog.mp4',
+      badge: 'URBAN STREET LIVE FEED',
+      location: '18.9894° N, 73.1175° E (Navi Mumbai)',
+      landmarks: '128 Biometric Facial Points'
+    },
+    {
+      id: 'village-desi',
+      shortLabel: 'CAM 02',
+      name: 'Community Desi Dog',
+      src: '/videos/indian-indie-dog.mp4',
+      badge: 'COMMUNITY HABITAT FEED',
+      location: '19.0760° N, 72.8777° E (Mumbai Ward K)',
+      landmarks: 'Ear-Notch & Coat Mapping'
+    },
+    {
+      id: 'neighborhood-indie',
+      shortLabel: 'CAM 03',
+      name: 'Neighborhood Indie',
+      src: '/videos/playful-yellow-indie.mp4',
+      badge: 'NEIGHBORHOOD ROAMING FEED',
+      location: '18.9220° N, 72.8347° E (South Bombay)',
+      landmarks: 'Canine Demographics & Vax Log'
+    }
+  ];
+
+  const [activeFeedIndex, setActiveFeedIndex] = useState(0);
+  const activeFeed = HERO_VIDEO_FEEDS[activeFeedIndex];
+
+  // Hero background video state
+  const heroVideoRef = useRef(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+
+  const toggleVideoPlayback = () => {
+    if (heroVideoRef.current) {
+      if (heroVideoRef.current.paused) {
+        heroVideoRef.current.play();
+        setIsVideoPlaying(true);
+      } else {
+        heroVideoRef.current.pause();
+        setIsVideoPlaying(false);
+      }
+    }
+  };
+  
+  // Structured feeding carousel state
+  const [feedingIndex, setFeedingIndex] = useState(0);
+  const FEEDING_SLIDES = [
+    { src: "/images/feeding-1.png", title: "Clean raised trough feeding for neighborhood indie pups" },
+    { src: "/images/feeding-2.png", title: "Two community dogs feeding peacefully side by side" },
+    { src: "/images/feeding-3.png", title: "Caregiver serving fresh species-appropriate food" },
+  ];
+
+  const handleNextFeeding = () => {
+    setFeedingIndex((prev) => (prev + 1) % FEEDING_SLIDES.length);
+  };
+
+  const handlePrevFeeding = () => {
+    setFeedingIndex((prev) => (prev - 1 + FEEDING_SLIDES.length) % FEEDING_SLIDES.length);
+  };
 
   const toggleFaq = (index) => {
     setOpenFaq(openFaq === index ? -1 : index);
@@ -155,63 +226,213 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           1. CINEMATIC HERO SECTION WITH SOLID CENTERED CARD
+             ANIMATIONS: Ambient Ken Burns, Live HUD Scanning Reticle, Spring Entrance
          ======================================================== */}
-      <section className="relative w-full min-h-[540px] lg:min-h-[600px] flex items-center justify-center overflow-hidden bg-slate-900 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <section className="relative w-full min-h-[540px] lg:min-h-[620px] flex items-center justify-center overflow-hidden bg-slate-950 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         
-        {/* Background Full Photographic Scene (Crisp Dog Photo) */}
-        <div className="absolute inset-0 w-full h-full">
-          <img 
-            src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1920&q=90" 
-            alt="Stray Dog Management for High-Risk Industrial Sites"
-            className="w-full h-full object-cover object-center brightness-100 contrast-[1.02]"
+        {/* Dynamic Video Background Scene (IndieCare AI Live Vision Feed) */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden bg-slate-950">
+          <video
+            ref={heroVideoRef}
+            key={activeFeed.src}
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1920&q=80"
+            className="w-full h-full object-cover object-center brightness-[0.82] contrast-[1.10] scale-[1.02]"
+          >
+            <source src={activeFeed.src} type="video/mp4" />
+            <source src="/videos/hero-dog.mp4" type="video/mp4" />
+            <img 
+              src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1920&q=80" 
+              alt="Indian Street Dog Management"
+              className="w-full h-full object-cover object-center"
+            />
+          </video>
+
+          {/* Dynamic Laser Scanning Line across the video */}
+          <motion.div 
+            className="absolute inset-x-0 h-32 bg-gradient-to-b from-transparent via-[#289E92]/25 to-transparent pointer-events-none"
+            animate={{ y: ['-100%', '600%'] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
           />
-          <div className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-black/35 to-transparent pointer-events-none"></div>
+
+          {/* High-tech Cyber Grid Mesh Pattern */}
+          <div 
+            className="absolute inset-0 pointer-events-none opacity-20"
+            style={{
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(40,158,146,0.35) 1px, transparent 0)',
+              backgroundSize: '32px 32px'
+            }}
+          />
+
+          {/* Cinematic Vignette Gradients for Depth & Legibility */}
+          <div className="absolute top-0 inset-x-0 h-36 bg-gradient-to-b from-slate-950/85 via-slate-950/40 to-transparent pointer-events-none" />
+          <div className="absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-slate-950/20 pointer-events-none" />
+
+          {/* Futuristic Live Biometric Scanning HUD & Camera Feed Selector (Top-Left) */}
+          <div className="hidden md:flex flex-col gap-2.5 absolute top-7 left-7 z-20">
+            {/* Canine Vision Active Badge */}
+            <div className="bg-slate-950/85 backdrop-blur-md px-4 py-3 rounded-2xl border border-emerald-500/40 text-[10px] font-mono text-emerald-400 space-y-1.5 shadow-2xl pointer-events-none">
+              <div className="flex items-center gap-2 font-bold">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span className="tracking-widest uppercase text-emerald-300">CANINE VISION ACTIVE</span>
+              </div>
+              <div className="text-slate-300 text-[9px] flex items-center gap-2">
+                <span>ENGINE: RESNET-V4</span>
+                <span className="text-emerald-400 font-bold">● 99.4% CONF</span>
+              </div>
+              <div className="text-emerald-300/80 text-[9px]">{activeFeed.landmarks}</div>
+            </div>
+
+            {/* Live Camera Stream Selector */}
+            <div className="bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-2xl border border-white/10 text-[10px] font-mono text-white flex items-center gap-2 shadow-2xl w-fit">
+              <span className="flex items-center gap-1.5 text-rose-400 font-bold tracking-wider mr-1">
+                <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                LIVE
+              </span>
+              {HERO_VIDEO_FEEDS.map((feed, idx) => (
+                <button
+                  key={feed.id}
+                  onClick={() => setActiveFeedIndex(idx)}
+                  className={`px-2.5 py-1 rounded-xl text-[10px] font-bold transition-all cursor-pointer ${
+                    activeFeedIndex === idx
+                      ? 'bg-[#289E92] text-white shadow-md'
+                      : 'bg-white/10 text-slate-300 hover:bg-white/20 hover:text-white'
+                  }`}
+                  title={`${feed.name} — ${feed.badge}`}
+                >
+                  {feed.shortLabel}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Left Side: Live AI Canine Detection Viewport HUD (Desktop) */}
+          <div className="hidden xl:block absolute left-7 top-1/2 -translate-y-1/2 pointer-events-none z-10">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="w-64 p-3.5 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-emerald-500/30 text-white space-y-2.5 shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
+                <span className="flex items-center gap-1.5 text-emerald-400 text-[10px] font-mono font-bold tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                  BIOMETRIC RETICLE
+                </span>
+                <span className="text-slate-400 text-[9px] font-mono">99.4% MATCH</span>
+              </div>
+
+              {/* Target Reticle Simulation */}
+              <div className="relative h-20 rounded-xl border border-dashed border-emerald-500/40 bg-emerald-950/20 flex flex-col items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-400/10 to-transparent animate-pulse" />
+                <div className="text-[10px] font-mono text-emerald-300 font-bold tracking-widest uppercase">
+                  INDIE CANINE DETECTED
+                </div>
+                <div className="text-[9px] font-mono text-slate-300 mt-0.5">
+                  STATUS: VERIFIED &amp; MAPPED
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-[9px] font-mono text-slate-400 pt-0.5">
+                <span>DOG ID: #IND-2024</span>
+                <span className="text-emerald-400 font-semibold">● ABC VERIFIED</span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bottom-Left Controls & Telemetry */}
+          <div className="absolute bottom-6 left-6 z-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            {/* Interactive Stream Controls */}
+            <button
+              onClick={toggleVideoPlayback}
+              className="bg-slate-950/80 hover:bg-slate-900/95 text-white/90 hover:text-white backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/20 text-[10px] font-mono flex items-center gap-2 shadow-xl transition-all cursor-pointer hover:border-[#289E92]/80"
+              title={isVideoPlaying ? "Pause background stream" : "Resume background stream"}
+            >
+              {isVideoPlaying ? (
+                <>
+                  <Pause className="w-3 h-3 text-[#289E92]" />
+                  <span className="hidden sm:inline">LIVE VIDEO RUNNING</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-3 h-3 text-emerald-400" />
+                  <span className="hidden sm:inline">RESUME VIDEO</span>
+                </>
+              )}
+            </button>
+
+            {/* GPS Telemetry & Active Feed Indicator */}
+            <div className="hidden md:block bg-slate-950/85 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-[#289E92]/50 text-[10px] font-mono text-white pointer-events-none shadow-2xl">
+              <div className="flex items-center gap-2">
+                <span className="text-[#289E92] font-bold">{activeFeed.badge}</span>
+                <span className="text-slate-400">•</span>
+                <span className="text-slate-300 text-[9px]">{activeFeed.location}</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Content Container — Centered & Proportionally Balanced */}
-        <div className="relative z-10 w-full max-w-xl lg:max-w-2xl mx-auto flex justify-center">
+        {/* Content Container — Placed on the Right Side of the Video */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex justify-center lg:justify-end items-center">
           
-          {/* Solid White Centered Card */}
-          <div className="w-full bg-white p-7 sm:p-9 md:p-10 rounded-3xl shadow-2xl border border-slate-100 space-y-5 text-center animate-fade-in">
-            
+          {/* Solid White Hero Card positioned on the Right */}
+          <motion.div 
+            initial={{ opacity: 0, x: 40, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-lg lg:max-w-xl bg-white p-7 sm:p-9 md:p-10 rounded-3xl shadow-2xl border border-slate-100 space-y-5 text-center lg:text-left relative overflow-hidden group lg:my-4"
+          >
+            {/* Shimmer gleam sweep across card */}
+            <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+              <div className="w-[150%] h-full bg-gradient-to-r from-transparent via-emerald-100/25 to-transparent animate-gleam"></div>
+            </div>
+
             {/* Badge */}
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#EBF5F3] text-[#104C4B] text-[11px] font-extrabold uppercase tracking-wider border border-[#D0EBE5] shadow-xs mx-auto">
-              <Sparkles className="w-3.5 h-3.5 text-[#289E92]" />
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#EBF5F3] text-[#104C4B] text-[11px] font-extrabold uppercase tracking-wider border border-[#D0EBE5] shadow-xs mx-auto lg:mx-0">
+              <Sparkles className="w-3.5 h-3.5 text-[#289E92] animate-spin" style={{ animationDuration: '6s' }} />
               <span>Field Verified Technology</span>
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#104C4B] tracking-tight leading-snug max-w-xl mx-auto">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#104C4B] tracking-tight leading-snug max-w-xl mx-auto lg:mx-0">
               Stray Dog Management for High-Risk Industrial Sites
             </h1>
 
             {/* Subhead */}
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto font-normal">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-lg mx-auto lg:mx-0 font-normal">
               End-to-end dog population management for your site through <strong className="text-[#104C4B] font-semibold">Scientific Enumeration</strong>, AI Registration, Deworming, Vaccination, Sterilization, Medical Records &amp; First Aid Management.
             </p>
 
             {/* Action Buttons */}
-            <div className="pt-1 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                to="/contact"
-                className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#289E92]/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-              >
-                <span>Book Site Assessment</span>
-                <ChevronRight className="w-4 h-4 stroke-[3]" />
-              </Link>
+            <div className="pt-1 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
+                <Link
+                  to="/contact"
+                  className="w-full sm:w-auto px-6 py-3 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#289E92]/25 transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Book Site Assessment</span>
+                  <ChevronRight className="w-4 h-4 stroke-[3]" />
+                </Link>
+              </motion.div>
 
-              <button
+              <motion.button
                 type="button"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={onOpenScanner}
-                className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#1F262B] hover:bg-[#151B1F] text-white font-bold text-xs sm:text-sm shadow transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#1F262B] hover:bg-[#151B1F] text-white font-bold text-xs sm:text-sm shadow transition-all flex items-center justify-center gap-2"
               >
                 <Scan className="w-4 h-4 text-[#289E92]" />
                 <span>Try AI Face Scan</span>
-              </button>
+              </motion.button>
             </div>
 
             {/* Trust Signals Footer */}
-            <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px] sm:text-xs text-slate-500 font-semibold">
+            <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-[11px] sm:text-xs text-slate-500 font-semibold">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                 <span>ABC Rules 2023 Compliant</span>
@@ -223,7 +444,7 @@ export default function Home({ onOpenScanner }) {
               </span>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
 
@@ -231,52 +452,142 @@ export default function Home({ onOpenScanner }) {
 
 
       {/* ========================================================
+          1.5 MANIFESTO: INDIA'S 35M FREE-ROAMING COMMUNITY DOGS & THE "DOG AADHAAR" VISION
+         ======================================================== */}
+      <section className="w-full bg-gradient-to-b from-slate-950 via-[#0B2524] to-[#104C4B] text-white py-14 sm:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden border-b border-[#289E92]/30">
+        
+        {/* Ambient Subtle Glow Orbs */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#289E92]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto space-y-10 relative z-10">
+          
+          {/* Header Tag & Section Title */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto space-y-3"
+          >
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-mono uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>India's Stray Animal Challenge // 35 Million Community Dogs</span>
+            </div>
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+              Across India's Urban Landscape, Over 35 Million Free-Roaming Dogs Live Alongside Citizens
+            </h2>
+          </motion.div>
+
+          {/* Central Story & Vision Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/70 backdrop-blur-xl p-6 sm:p-10 rounded-3xl border border-white/10 shadow-2xl"
+          >
+            
+            {/* Story Paragraphs & Direct Quote */}
+            <div className="lg:col-span-7 space-y-5 text-slate-300 text-sm sm:text-base leading-relaxed">
+              <p>
+                For decades, municipal corporations and animal shelters operated on <strong className="text-white font-semibold">manual paper registers, unscientific estimates, and reactive crisis firefighting</strong>.
+              </p>
+              <p>
+                The result? <span className="text-rose-300 font-medium">Sterilized dogs were caught repeatedly</span>, rabies vaccination gaps caused public health alarms, and street dogs were subjected to illegal territorial dumping—causing human dog-bite incidents.
+              </p>
+              
+              {/* Highlight Quote Box */}
+              <div className="relative pl-5 py-4 border-l-4 border-[#289E92] bg-gradient-to-r from-[#289E92]/15 to-transparent rounded-r-2xl">
+                <Quote className="w-6 h-6 text-[#289E92] mb-1.5 opacity-80" />
+                <p className="font-serif italic text-base sm:text-lg text-emerald-200 font-medium leading-snug">
+                  "We asked a simple question: If every Indian citizen can have an Aadhaar digital ID, why can't every neighborhood indie dog have a tamper-proof digital profile?"
+                </p>
+                <span className="block text-xs font-mono text-emerald-400/80 mt-2 tracking-wide uppercase">
+                  — The Founding Vision of IndieCare AI
+                </span>
+              </div>
+            </div>
+
+            {/* 3 Metric Impact Columns */}
+            <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3.5">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1 hover:border-[#289E92]/50 transition-colors">
+                <div className="text-[11px] font-mono text-emerald-400 uppercase tracking-widest">The Scale of Challenge</div>
+                <div className="text-2xl font-black text-white">35,000,000+</div>
+                <p className="text-xs text-slate-400">Free-roaming community dogs living alongside Indian citizens</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1 hover:border-[#289E92]/50 transition-colors">
+                <div className="text-[11px] font-mono text-[#289E92] uppercase tracking-widest">Ending Repeated Recaptures</div>
+                <div className="text-2xl font-black text-white">100% Non-Invasive</div>
+                <p className="text-xs text-slate-400">No ear-tags, no microchips, instant phone camera biometric scan</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1 sm:col-span-2 lg:col-span-1 hover:border-emerald-400/50 transition-colors">
+                <div className="text-[11px] font-mono text-amber-300 uppercase tracking-widest">Public Health Safeguard</div>
+                <div className="text-2xl font-black text-white">70%+ Herd Immunity</div>
+                <p className="text-xs text-slate-400">Eliminating rabies vaccination gaps &amp; territorial dumping</p>
+              </div>
+            </div>
+
+          </motion.div>
+
+        </div>
+      </section>
+
+
+      {/* ========================================================
           2. THE 4 REAL SMARTPHONE FEATURE MOCKUPS
+             ANIMATIONS: Staggered Scroll-Triggered Reveal & Floating Oscillations
          ======================================================== */}
       <section className="w-full bg-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-7xl mx-auto space-y-12">
           
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto space-y-3"
+          >
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#172E2D] tracking-tight leading-tight">
               Just One Photo Gives You A Stray Dog's ID, Location, Medical History &amp; Incidence Reporting
             </h2>
             <p className="text-sm sm:text-base text-[#617472]">
               Tap into India's first digital canine registry on standard mobile phones. No invasive microchips or painful tags.
             </p>
-          </div>
+          </motion.div>
 
+          {/* Staggered Phone Mockups Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-[#F7F8F6] p-5 rounded-3xl border border-[#DCE9E5] shadow-card-soft hover:shadow-card-hover transition-all flex flex-col items-center text-center space-y-4">
-              <div>
-                <h3 className="text-lg font-black text-[#104C4B]">Dog Aadhaar</h3>
-                <p className="text-xs text-[#617472] mt-0.5">Get info of Age, Breed, Gender, Caregiver &amp; more</p>
-              </div>
-              <PhoneFrame><DogAadhaarScreen /></PhoneFrame>
-            </div>
-
-            <div className="bg-[#F7F8F6] p-5 rounded-3xl border border-[#DCE9E5] shadow-card-soft hover:shadow-card-hover transition-all flex flex-col items-center text-center space-y-4">
-              <div>
-                <h3 className="text-lg font-black text-[#104C4B]">Location</h3>
-                <p className="text-xs text-[#617472] mt-0.5">See both Registered &amp; Scanned locations of dog</p>
-              </div>
-              <PhoneFrame><LocationScreen /></PhoneFrame>
-            </div>
-
-            <div className="bg-[#F7F8F6] p-5 rounded-3xl border border-[#DCE9E5] shadow-card-soft hover:shadow-card-hover transition-all flex flex-col items-center text-center space-y-4">
-              <div>
-                <h3 className="text-lg font-black text-[#104C4B]">Vaccination</h3>
-                <p className="text-xs text-[#617472] mt-0.5">View Vaccine Details &amp; Due Date, Sterilization Status &amp; more</p>
-              </div>
-              <PhoneFrame><VaccinationScreen /></PhoneFrame>
-            </div>
-
-            <div className="bg-[#F7F8F6] p-5 rounded-3xl border border-[#DCE9E5] shadow-card-soft hover:shadow-card-hover transition-all flex flex-col items-center text-center space-y-4">
-              <div>
-                <h3 className="text-lg font-black text-[#104C4B]">Report a Dog</h3>
-                <p className="text-xs text-[#617472] mt-0.5">Trigger alerts for Bites, Injuries Or Dog Needing Help</p>
-              </div>
-              <PhoneFrame><ReportScreen /></PhoneFrame>
-            </div>
+            {[
+              { title: "Dog Aadhaar", desc: "Get info of Age, Breed, Gender, Caregiver & more", component: <DogAadhaarScreen />, floatDelay: 0 },
+              { title: "Location", desc: "See both Registered & Scanned locations of dog", component: <LocationScreen />, floatDelay: 0.8 },
+              { title: "Vaccination", desc: "View Vaccine Details & Due Date, Sterilization Status & more", component: <VaccinationScreen />, floatDelay: 1.6 },
+              { title: "Report a Dog", desc: "Trigger alerts for Bites, Injuries Or Dog Needing Help", component: <ReportScreen />, floatDelay: 2.4 },
+            ].map((phone, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, delay: idx * 0.14, ease: "easeOut" }}
+                whileHover={{ y: -8, transition: { duration: 0.25 } }}
+                className="bg-[#F7F8F6] p-5 rounded-3xl border border-[#DCE9E5] shadow-card-soft hover:shadow-card-hover hover:border-[#289E92]/50 transition-all flex flex-col items-center text-center space-y-4 group"
+              >
+                <div>
+                  <h3 className="text-lg font-black text-[#104C4B] group-hover:text-[#289E92] transition-colors">{phone.title}</h3>
+                  <p className="text-xs text-[#617472] mt-0.5">{phone.desc}</p>
+                </div>
+                
+                <motion.div
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 4, delay: phone.floatDelay, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <PhoneFrame>{phone.component}</PhoneFrame>
+                </motion.div>
+              </motion.div>
+            ))}
           </div>
 
         </div>
@@ -286,11 +597,18 @@ export default function Home({ onOpenScanner }) {
       {/* ========================================================
           3. CREDIBILITY & VALIDATION SECTION
              "BACKED BY INDIA'S BEST — Incubated & Validated"
+             ANIMATIONS: Staggered Fade Up with Hover Scale
          ======================================================== */}
       <section className="w-full bg-[#F7F8F6] py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-6xl mx-auto text-center space-y-9">
           
-          <div className="space-y-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.55 }}
+            className="space-y-3"
+          >
             <span className="text-xs font-bold text-[#289E92] uppercase tracking-widest block">
               BACKED BY INDIA'S BEST
             </span>
@@ -300,20 +618,26 @@ export default function Home({ onOpenScanner }) {
             <p className="text-xs sm:text-sm text-[#617472] max-w-2xl mx-auto leading-relaxed">
               IndieCare AI Solutions Private Limited is incubated by the <strong className="text-[#104C4B] font-bold">SMILE Council of BMC</strong> &amp; by <strong className="text-[#104C4B] font-bold">SINE at IIT Bombay</strong>. Its technology has been validated by <strong className="text-[#104C4B] font-bold">IIT Guwahati</strong> for building scientific humane stray dog management.
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-            <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex items-center justify-center">
-              <BmcSmileLogo />
-            </div>
-
-            <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex items-center justify-center">
-              <SineIitBombayLogo />
-            </div>
-
-            <div className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all flex items-center justify-center">
-              <IitGuwahatiLogo />
-            </div>
+            {[
+              { id: 'smile', component: <BmcSmileLogo /> },
+              { id: 'sine', component: <SineIitBombayLogo /> },
+              { id: 'iitg', component: <IitGuwahatiLogo /> },
+            ].map((logo, idx) => (
+              <motion.div
+                key={logo.id}
+                initial={{ opacity: 0, y: 25, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.15 }}
+                whileHover={{ scale: 1.04, y: -4, transition: { duration: 0.25 } }}
+                className="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-[#289E92]/50 transition-all flex items-center justify-center group"
+              >
+                {logo.component}
+              </motion.div>
+            ))}
           </div>
 
         </div>
@@ -346,12 +670,23 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           5. IMPLEMENT AT YOUR SITE + GOOGLE PLAY STORE BANNER
+             ANIMATIONS: 3D Holographic Tilt, Card Float, Shimmer Sheen
          ======================================================== */}
-      <section className="w-full bg-[#104C4B] text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <section className="w-full bg-[#104C4B] text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Ambient background glow orb */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#289E92]/20 blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-[#289E92]/15 blur-3xl pointer-events-none"></div>
+
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             
-            <div className="lg:col-span-7 space-y-6 text-center sm:text-left">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.65 }}
+              className="lg:col-span-7 space-y-6 text-center sm:text-left"
+            >
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight leading-tight">
                 Implement a Stray Dog Management Program at Your Site
               </h2>
@@ -360,11 +695,13 @@ export default function Home({ onOpenScanner }) {
               </p>
 
               <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4">
-                <a
+                <motion.a
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   href="https://play.google.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-black border border-white/20 hover:border-white/40 shadow-lg transition-transform hover:scale-105"
+                  className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-black border border-white/20 hover:border-white/40 shadow-lg transition-transform"
                 >
                   <svg viewBox="0 0 512 512" className="w-7 h-7">
                     <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#00e676" />
@@ -376,27 +713,45 @@ export default function Home({ onOpenScanner }) {
                     <span className="text-[9px] uppercase tracking-wider text-slate-300 block">GET IT ON</span>
                     <strong className="text-sm font-bold text-white">Google Play</strong>
                   </div>
-                </a>
+                </motion.a>
 
-                <Link
-                  to="/contact"
-                  className="px-6 py-3 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all"
-                >
-                  Book Program Demo
-                </Link>
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                  <Link
+                    to="/contact"
+                    className="inline-block px-6 py-3 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm shadow-md transition-all"
+                  >
+                    Book Program Demo
+                  </Link>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="w-full max-w-xs bg-white text-slate-800 p-5 rounded-3xl shadow-2xl border-4 border-white/20 text-left space-y-3">
+            {/* Rani's Floating Dog Aadhaar Card with 3D Tilt Perspective */}
+            <motion.div 
+              initial={{ opacity: 0, x: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="lg:col-span-5 flex justify-center [perspective:1000px]"
+            >
+              <motion.div 
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }}
+                whileHover={{ rotateY: 6, rotateX: -5, scale: 1.04, transition: { duration: 0.25 } }}
+                className="w-full max-w-xs bg-white text-slate-800 p-5 rounded-3xl shadow-2xl border-4 border-white/20 text-left space-y-3 relative overflow-hidden group cursor-pointer"
+              >
+                {/* Shimmer gleam reflection */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-100/30 to-transparent animate-gleam pointer-events-none"></div>
+
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100 border border-slate-200">
                   <img 
                     src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=600&q=80" 
                     alt="Rani Dog Aadhaar" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="absolute top-2 right-2 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
-                    Campus Resident
+                  <span className="absolute top-2 right-2 bg-emerald-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping"></span>
+                    <span>Campus Resident</span>
                   </span>
                 </div>
 
@@ -425,8 +780,8 @@ export default function Home({ onOpenScanner }) {
                     <strong>Oct-2021</strong>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
           </div>
         </div>
@@ -435,89 +790,78 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           6. TRAINING—FREE-ROAMING DOGS (NEW COMPONENT 1)
-             (From Screenshot 1: 3 Video Cards with Trainers)
+             ANIMATIONS: Staggered Fade Up + Concentric Pulse on Play Icons
          ======================================================== */}
       <section className="w-full bg-[#F4F9F8] py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-6xl mx-auto space-y-12">
           
-          <div className="text-center max-w-3xl mx-auto space-y-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto space-y-3"
+          >
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#172E2D]">
               Training—Free-Roaming Dogs
             </h2>
             <p className="text-xs sm:text-sm text-[#617472] leading-relaxed">
               Behaviour training isn't just about commands, it's about reducing stress, building trust, and creating safer public spaces. These sessions demonstrate how structured guidance helps community dogs stay calm, responsive, and confident in everyday situations.
             </p>
-          </div>
+          </motion.div>
 
           {/* 3 Video Cards Grid matching Screenshot 1 */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            {/* Card 1: Recall Training */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-full max-w-[270px] aspect-[9/16] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-900 relative group">
-                <img 
-                  src="/images/train-recall.png" 
-                  alt="Recall Training session"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white/90 text-[#104C4B] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Play className="w-5 h-5 fill-[#104C4B] ml-0.5" />
+            {[
+              {
+                title: "Recall Training",
+                img: "/images/train-recall.png",
+                desc: "Recall training helps Ash respond reliably to guidance, building trust and making her safer and easier to manage.",
+              },
+              {
+                title: "Basic Obedience",
+                img: "/images/train-obedience.png",
+                desc: "Teaching calm pedestrian greetings and eliminating territorial barking around high-traffic campus zones.",
+              },
+              {
+                title: "Mat Training",
+                img: "/images/train-mat.png",
+                desc: "Habituating community dogs to dedicated rest mats away from high-risk machinery and vehicle routes.",
+              },
+            ].map((video, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, delay: idx * 0.15 }}
+                whileHover={{ y: -8, transition: { duration: 0.25 } }}
+                className="flex flex-col items-center text-center space-y-4 group"
+              >
+                <div className="w-full max-w-[270px] aspect-[9/16] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-900 relative group-hover:shadow-2xl transition-all">
+                  <img 
+                    src={video.img} 
+                    alt={video.title}
+                    className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out" 
+                  />
+                  <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                    {/* Concentric pulsing radar waves behind Play */}
+                    <div className="relative flex items-center justify-center">
+                      <span className="absolute w-14 h-14 rounded-full bg-white/40 animate-ping pointer-events-none"></span>
+                      <div className="w-12 h-12 rounded-full bg-white/95 text-[#104C4B] flex items-center justify-center shadow-lg group-hover:scale-115 transition-transform relative z-10">
+                        <Play className="w-5 h-5 fill-[#104C4B] ml-0.5" />
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="space-y-1 max-w-[260px]">
-                <h3 className="font-bold text-base text-[#104C4B]">Recall Training</h3>
-                <p className="text-[11px] text-[#617472] leading-snug">
-                  Recall training helps Ash respond reliably to guidance, building trust and making her safer and easier to manage.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 2: Basic Obedience */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-full max-w-[270px] aspect-[9/16] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-900 relative group">
-                <img 
-                  src="/images/train-obedience.png" 
-                  alt="Basic Obedience training"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white/90 text-[#104C4B] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Play className="w-5 h-5 fill-[#104C4B] ml-0.5" />
-                  </div>
+                <div className="space-y-1 max-w-[260px]">
+                  <h3 className="font-bold text-base text-[#104C4B] group-hover:text-[#289E92] transition-colors">{video.title}</h3>
+                  <p className="text-[11px] text-[#617472] leading-snug">
+                    {video.desc}
+                  </p>
                 </div>
-              </div>
-              <div className="space-y-1 max-w-[260px]">
-                <h3 className="font-bold text-base text-[#104C4B]">Basic Obedience</h3>
-                <p className="text-[11px] text-[#617472] leading-snug">
-                  Teaching calm pedestrian greetings and eliminating territorial barking around high-traffic campus zones.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 3: Mat Training */}
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="w-full max-w-[270px] aspect-[9/16] rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-900 relative group">
-                <img 
-                  src="/images/train-mat.png" 
-                  alt="Mat Training"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
-                />
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-white/90 text-[#104C4B] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                    <Play className="w-5 h-5 fill-[#104C4B] ml-0.5" />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1 max-w-[260px]">
-                <h3 className="font-bold text-base text-[#104C4B]">Mat Training</h3>
-                <p className="text-[11px] text-[#617472] leading-snug">
-                  Habituating community dogs to dedicated rest mats away from high-risk machinery and vehicle routes.
-                </p>
-              </div>
-            </div>
-
+              </motion.div>
+            ))}
           </div>
 
         </div>
@@ -526,28 +870,48 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           7. STRUCTURED FEEDING DRIVES THAT GO BEYOND NOURISHMENT (NEW COMPONENT 2)
-             (From Screenshot 2: Carousel with 3 Real Trough Photos)
+             ANIMATIONS: Interactive Animated Slide Carousel + Image Lift
          ======================================================== */}
       <section className="w-full bg-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-6xl mx-auto space-y-10">
           
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            {/* Carousel navigation controls */}
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <button 
+            {/* Carousel navigation controls with hover motion */}
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 type="button"
-                className="w-8 h-8 rounded-lg bg-[#397B78] text-white flex items-center justify-center hover:bg-[#289E92] shadow transition-colors"
-                title="Previous"
+                onClick={handlePrevFeeding}
+                className="w-9 h-9 rounded-xl bg-[#397B78] text-white flex items-center justify-center hover:bg-[#289E92] shadow-md transition-colors"
+                title="Previous Slide"
               >
                 <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button 
+              </motion.button>
+              
+              <div className="flex items-center gap-1.5 px-2">
+                {FEEDING_SLIDES.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setFeedingIndex(i)}
+                    className={`h-2 rounded-full transition-all ${
+                      feedingIndex === i ? 'w-6 bg-[#289E92]' : 'w-2 bg-slate-300 hover:bg-slate-400'
+                    }`}
+                    title={`Slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 type="button"
-                className="w-8 h-8 rounded-lg bg-[#397B78] text-white flex items-center justify-center hover:bg-[#289E92] shadow transition-colors"
-                title="Next"
+                onClick={handleNextFeeding}
+                className="w-9 h-9 rounded-xl bg-[#397B78] text-white flex items-center justify-center hover:bg-[#289E92] shadow-md transition-colors"
+                title="Next Slide"
               >
                 <ChevronRight className="w-4 h-4" />
-              </button>
+              </motion.button>
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#172E2D]">
@@ -558,31 +922,31 @@ export default function Home({ onOpenScanner }) {
             </p>
           </div>
 
-          {/* 3 Real Feeding Photos from Screenshot 2 */}
+          {/* 3 Real Feeding Photos with Interactive Staggered Zoom */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 aspect-[4/3] group">
-              <img 
-                src="/images/feeding-1.png" 
-                alt="Caregiver in white IndieCare polo feeding pups at clean trough" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-
-            <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 aspect-[4/3] group">
-              <img 
-                src="/images/feeding-2.png" 
-                alt="Two dogs feeding peacefully side by side from a raised metal trough" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-
-            <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 aspect-[4/3] group">
-              <img 
-                src="/images/feeding-3.png" 
-                alt="Caregiver serving fresh food into the trough while dogs eat calmly" 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
+            {FEEDING_SLIDES.map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.12 }}
+                whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                onClick={() => setFeedingIndex(idx)}
+                className={`rounded-3xl overflow-hidden shadow-lg border-2 aspect-[4/3] group relative cursor-pointer transition-all ${
+                  feedingIndex === idx ? 'border-[#289E92] ring-4 ring-[#289E92]/20 shadow-2xl' : 'border-slate-200 bg-slate-100'
+                }`}
+              >
+                <img 
+                  src={item.src} 
+                  alt={item.title} 
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                  <p className="text-xs text-white font-semibold drop-shadow">{item.title}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
         </div>
@@ -591,7 +955,7 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           8. FOLLOW US ON YOUR INSTAGRAM (NEW COMPONENT 3)
-             (From Screenshot 3: Profile Header + 4 Posts)
+             ANIMATIONS: Playful Dynamic Hover Tilts & Gleam Sweep
          ======================================================== */}
       <section className="w-full bg-[#F4F9F8] py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-6xl mx-auto space-y-10">
@@ -615,38 +979,47 @@ export default function Home({ onOpenScanner }) {
             </div>
           </div>
 
-          {/* 4 Instagram Posts Grid */}
+          {/* 4 Instagram Posts Grid with Staggered Dynamic Tilt on Hover */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-square group bg-slate-900 relative">
-              <img src="/images/ig-1.png" alt="Instagram Post 1" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors"></div>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-square group bg-slate-900 relative">
-              <img src="/images/ig-2.png" alt="Instagram Post 2" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors"></div>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-square group bg-slate-900 relative">
-              <img src="/images/ig-3.png" alt="Instagram Post 3" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors"></div>
-            </div>
-
-            <div className="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-square group bg-slate-900 relative">
-              <img src="/images/ig-4.png" alt="Instagram Post 4" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors"></div>
-            </div>
+            {[
+              { img: "/images/ig-1.png", alt: "Instagram Post 1" },
+              { img: "/images/ig-2.png", alt: "Instagram Post 2" },
+              { img: "/images/ig-3.png", alt: "Instagram Post 3" },
+              { img: "/images/ig-4.png", alt: "Instagram Post 4" },
+            ].map((post, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: idx * 0.1 }}
+                whileHover={{ scale: 1.05, rotate: idx % 2 === 0 ? 1.5 : -1.5, transition: { duration: 0.2 } }}
+                className="rounded-2xl overflow-hidden shadow-md border border-slate-200 aspect-square group bg-slate-900 relative cursor-pointer"
+              >
+                <img 
+                  src={post.img} 
+                  alt={post.alt} 
+                  className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" 
+                />
+                <div className="absolute inset-0 bg-black/15 group-hover:bg-black/0 transition-colors"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+              </motion.div>
+            ))}
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center justify-center gap-3 pt-2">
-            <button 
+            <motion.button 
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               type="button" 
               className="px-6 py-2.5 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold text-xs uppercase tracking-wider shadow transition-colors"
             >
               LOAD MORE
-            </button>
-            <a 
+            </motion.button>
+            <motion.a 
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
               href="https://instagram.com/indiecare_ai" 
               target="_blank" 
               rel="noopener noreferrer"
@@ -654,7 +1027,7 @@ export default function Home({ onOpenScanner }) {
             >
               <Instagram className="w-4 h-4" />
               <span>Follow on Instagram</span>
-            </a>
+            </motion.a>
           </div>
 
         </div>
@@ -663,25 +1036,35 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           9. FOLLOW US ON LINKEDIN BANNER (NEW COMPONENT 4)
-             (From Screenshot 4: Wide Mint Banner with Worker & Phone)
+             ANIMATIONS: Shimmer Sheen Gliding Across Banner
          ======================================================== */}
       <section className="w-full py-6 sm:py-10 px-4 sm:px-6 lg:px-8 bg-white border-b border-[#DCE9E5]">
-        <div className="max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-xl border border-slate-200 relative group">
+        <motion.div 
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          whileHover={{ scale: 1.01, transition: { duration: 0.25 } }}
+          className="max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-xl border border-slate-200 relative group"
+        >
+          {/* Shimmer gleam sweep */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-gleam pointer-events-none z-20"></div>
+
           <img 
             src="/images/linkedin-banner.png" 
             alt="Follow IndieCare AI on LinkedIn" 
-            className="w-full h-auto object-cover object-center"
+            className="w-full h-auto object-cover object-center group-hover:scale-[1.02] transition-transform duration-700 ease-out"
           />
           <a 
             href="https://linkedin.com/company/indiecare-ai" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="absolute inset-0 z-10"
+            className="absolute inset-0 z-30"
             title="Open IndieCare AI LinkedIn"
           >
             <span className="sr-only">Follow us on LinkedIn</span>
           </a>
-        </div>
+        </motion.div>
       </section>
 
 
@@ -695,9 +1078,17 @@ export default function Home({ onOpenScanner }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
             
             {/* Left Column: Dark Slate Callback Form (5 cols) — Equal Vertical Height */}
-            <div className="lg:col-span-5 flex flex-col">
-              <div className="h-full bg-[#16222F] text-white p-7 sm:p-9 rounded-3xl shadow-2xl border border-slate-800 flex flex-col justify-between space-y-6">
-                
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.65 }}
+              className="lg:col-span-5 flex flex-col"
+            >
+              <div className="h-full bg-[#16222F] text-white p-7 sm:p-9 rounded-3xl shadow-2xl border border-slate-800 flex flex-col justify-between space-y-6 relative overflow-hidden">
+                {/* Shimmer light pass */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-500/5 to-transparent animate-gleam pointer-events-none"></div>
+
                 {/* Header */}
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#289E92]/20 border border-[#289E92]/40 text-[#289E92] text-[11px] font-bold uppercase tracking-wider mb-2.5">
@@ -713,15 +1104,19 @@ export default function Home({ onOpenScanner }) {
                 </div>
 
                 {callbackSent ? (
-                  <div className="bg-emerald-950/80 border border-emerald-500/50 p-8 rounded-2xl text-center space-y-3 my-auto">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-emerald-950/80 border border-emerald-500/50 p-8 rounded-2xl text-center space-y-3 my-auto"
+                  >
                     <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
-                      <Check className="w-7 h-7 stroke-[3]" />
+                      <Check className="w-7 h-7 stroke-[3] animate-pulse" />
                     </div>
                     <strong className="text-white text-base block font-bold">Callback Request Received!</strong>
                     <p className="text-xs text-slate-300 leading-relaxed">
                       Our field team has logged your inquiry. A senior stray dog management coordinator will contact you at your preferred number.
                     </p>
-                  </div>
+                  </motion.div>
                 ) : (
                   <form onSubmit={handleCallbackSubmit} className="space-y-4 my-auto">
                     <div>
@@ -732,7 +1127,7 @@ export default function Home({ onOpenScanner }) {
                         required 
                         type="text" 
                         placeholder="Enter Your Name" 
-                        className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400"
+                        className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400 transition-all"
                       />
                     </div>
 
@@ -745,7 +1140,7 @@ export default function Home({ onOpenScanner }) {
                           required 
                           type="email" 
                           placeholder="Enter Your Email Address" 
-                          className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400"
+                          className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400 transition-all"
                         />
                       </div>
 
@@ -757,7 +1152,7 @@ export default function Home({ onOpenScanner }) {
                           required 
                           type="tel" 
                           placeholder="Enter your mobile number" 
-                          className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400"
+                          className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400 transition-all"
                         />
                       </div>
                     </div>
@@ -786,7 +1181,7 @@ export default function Home({ onOpenScanner }) {
                         rows="4" 
                         required 
                         placeholder="Tell us about your campus, city, estimated stray dog population, or specific requirements..." 
-                        className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400 resize-none"
+                        className="w-full px-4 py-3 rounded-xl bg-white text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#289E92] placeholder-slate-400 resize-none transition-all"
                       ></textarea>
                     </div>
 
@@ -806,13 +1201,15 @@ export default function Home({ onOpenScanner }) {
                       </div>
                     </div>
 
-                    <button 
+                    <motion.button 
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       type="submit" 
-                      className="w-full py-3.5 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg shadow-[#289E92]/30 hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2"
+                      className="w-full py-3.5 rounded-full bg-[#289E92] hover:bg-[#20897F] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase transition-all shadow-lg shadow-[#289E92]/30 flex items-center justify-center gap-2"
                     >
                       <span>SEND MESSAGE</span>
                       <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-                    </button>
+                    </motion.button>
                   </form>
                 )}
 
@@ -842,10 +1239,16 @@ export default function Home({ onOpenScanner }) {
                 </div>
 
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Column: 9-Question FAQ Accordion (7 cols) — Equal Vertical Height */}
-            <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
+            {/* Right Column: 9-Question FAQ Accordion (7 cols) with Smooth AnimatePresence */}
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.65 }}
+              className="lg:col-span-7 flex flex-col justify-between space-y-4"
+            >
               <div className="space-y-1">
                 <span className="text-xs font-bold text-[#289E92] uppercase tracking-widest block">
                   Learn More From
@@ -869,21 +1272,36 @@ export default function Home({ onOpenScanner }) {
                         className="w-full p-4 sm:p-4.5 text-left flex items-center justify-between gap-4 font-bold text-sm text-[#172E2D] hover:text-[#104C4B] transition-colors"
                       >
                         <span className="leading-snug">{faq.q}</span>
-                        <span className="w-6 h-6 rounded-full bg-[#EBF5F3] text-[#104C4B] flex items-center justify-center shrink-0">
+                        <motion.span 
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.25 }}
+                          className="w-6 h-6 rounded-full bg-[#EBF5F3] text-[#104C4B] flex items-center justify-center shrink-0"
+                        >
                           {isOpen ? <Minus className="w-3.5 h-3.5 stroke-[3]" /> : <Plus className="w-3.5 h-3.5 stroke-[3]" />}
-                        </span>
+                        </motion.span>
                       </button>
 
-                      {isOpen && (
-                        <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#617472] leading-relaxed border-t border-slate-100 bg-[#FAFBFB]">
-                          {faq.a}
-                        </div>
-                      )}
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.div
+                            key="content"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-[#617472] leading-relaxed border-t border-slate-100 bg-[#FAFBFB]">
+                              {faq.a}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   );
                 })}
               </div>
-            </div>
+            </motion.div>
 
           </div>
         </div>
@@ -892,27 +1310,37 @@ export default function Home({ onOpenScanner }) {
 
       {/* ========================================================
           11. READ OUR LATEST INSIGHTS (NEW COMPONENT 6)
-              (From Screenshot 6: 4 High-Res Cards + Show More)
-              ENHANCED: Larger crisp display photos, rich excerpts, no duplicated text
+             ANIMATIONS: Staggered Cards, Image Depth Zoom, Hover Elevation
          ======================================================== */}
       <section className="w-full bg-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-[#DCE9E5]">
         <div className="max-w-7xl mx-auto space-y-12">
           
-          <div className="text-center space-y-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center space-y-3"
+          >
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#172E2D]">
               Read Our Latest Insights
             </h2>
             <p className="text-xs sm:text-sm text-[#617472] max-w-xl mx-auto">
               Field updates, technological innovations, and policy perspectives shaping India's humane street dog management landscape.
             </p>
-          </div>
+          </motion.div>
 
-          {/* 4 Insights Cards Grid — Bigger, High-Resolution, Editorial Layout */}
+          {/* 4 Insights Cards Grid — Bigger, High-Resolution, Staggered Reveal */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
             {INSIGHTS.map((item, idx) => (
-              <div 
+              <motion.div 
                 key={idx}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-[#289E92] transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5"
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.12 }}
+                whileHover={{ y: -8, transition: { duration: 0.25 } }}
+                className="bg-white rounded-3xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-2xl hover:border-[#289E92] transition-all duration-300 flex flex-col justify-between group cursor-pointer"
               >
                 <div>
                   {/* Photo with Category Badge — Clean High-Resolution 600x360 Photo */}
@@ -940,10 +1368,10 @@ export default function Home({ onOpenScanner }) {
 
                     <Link 
                       to={item.link} 
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A] group-hover:text-[#138038] hover:underline pt-2 uppercase tracking-wide"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-[#16A34A] group-hover:text-[#138038] hover:underline pt-2 uppercase tracking-wide group"
                     >
                       <span>LEARN MORE</span>
-                      <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+                      <ArrowRight className="w-3.5 h-3.5 stroke-[2.5] group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
                 </div>
@@ -952,18 +1380,20 @@ export default function Home({ onOpenScanner }) {
                 <div className="px-5 py-3.5 border-t border-slate-100 text-[11px] text-slate-400 bg-slate-50/50">
                   {item.date}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          {/* "Show More" Button */}
+          {/* "Show More" Button with Spring Motion */}
           <div className="text-center pt-2">
-            <Link
-              to="/solutions"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
-            >
-              Show More
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link
+                to="/solutions"
+                className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-[#16A34A] hover:bg-[#15803D] text-white font-extrabold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-colors"
+              >
+                Show More
+              </Link>
+            </motion.div>
           </div>
 
         </div>

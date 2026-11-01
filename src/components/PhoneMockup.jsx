@@ -13,7 +13,13 @@ import {
 // Realistic smartphone bezel container
 export function PhoneFrame({ children }) {
   return (
-    <div className="relative mx-auto w-[230px] sm:w-[240px] h-[460px] bg-slate-900 rounded-[38px] p-2.5 shadow-2xl border-4 border-slate-700/80 ring-1 ring-black/20 flex flex-col justify-between overflow-hidden">
+    <div className="relative mx-auto w-[230px] sm:w-[240px] h-[460px] bg-slate-900 rounded-[38px] p-2.5 shadow-2xl border-4 border-slate-700/80 ring-1 ring-black/20 flex flex-col justify-between overflow-hidden group">
+      
+      {/* Subtle Glass Gleam Sweep */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-30 overflow-hidden rounded-[34px]">
+        <div className="w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent animate-gleam pointer-events-none"></div>
+      </div>
+
       {/* Speaker notch */}
       <div className="absolute top-3 inset-x-0 mx-auto w-20 h-4 bg-slate-950 rounded-full z-30 flex items-center justify-center">
         <div className="w-8 h-1 bg-slate-800 rounded-full"></div>
@@ -28,6 +34,7 @@ export function PhoneFrame({ children }) {
           <span>8:05</span>
           <div className="flex items-center gap-1 text-[9px]">
             <span>5G</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
             <span>100%</span>
           </div>
         </div>
@@ -51,14 +58,24 @@ export function DogAadhaarScreen() {
   return (
     <div className="flex-1 flex flex-col justify-between text-left">
       <div>
-        <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 shadow-sm border border-slate-200">
+        <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden bg-slate-100 shadow-sm border border-slate-200 group-hover:shadow-md transition-shadow">
           <img 
             src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80" 
             alt="Dog Aadhaar"
             className="w-full h-full object-cover" 
           />
-          <div className="absolute top-1.5 right-1.5 bg-emerald-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
-            Active
+          {/* Biometric Scanning Reticle HUD */}
+          <div className="absolute inset-2 border border-emerald-400/50 rounded-lg pointer-events-none animate-hud-bracket">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-emerald-400"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-emerald-400"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-emerald-400"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-emerald-400"></div>
+            <div className="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-scanline"></div>
+          </div>
+
+          <div className="absolute top-1.5 right-1.5 bg-emerald-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-ping"></span>
+            <span>Active</span>
           </div>
         </div>
 
@@ -91,7 +108,10 @@ export function DogAadhaarScreen() {
 
       <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[8px] text-slate-500">
         <span>Caregiver: Ward Unit</span>
-        <span className="font-mono text-emerald-700 font-bold">● Aadhaar Verified</span>
+        <span className="font-mono text-emerald-700 font-bold flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+          <span>Aadhaar Verified</span>
+        </span>
       </div>
     </div>
   );
@@ -119,18 +139,24 @@ export function LocationScreen() {
           <path d="M-10,140 Q100,120 250,160" strokeWidth="6" />
         </svg>
 
-        {/* Pin 1: Registered */}
+        {/* Pin 1: Registered with Radar Pulse */}
         <div className="relative z-10 self-start bg-white/95 px-2 py-1 rounded-md shadow-md border border-slate-200 text-[8px] flex items-center gap-1">
-          <MapPin className="w-3 h-3 text-[#104C4B]" />
+          <div className="relative flex items-center justify-center">
+            <span className="absolute w-4 h-4 rounded-full bg-[#104C4B]/40 animate-radar"></span>
+            <MapPin className="w-3 h-3 text-[#104C4B] relative z-10" />
+          </div>
           <div>
             <strong className="text-[#104C4B] block">Registered:</strong>
             <span className="text-slate-600">Sector 19 Park</span>
           </div>
         </div>
 
-        {/* Pin 2: Current Sighting */}
+        {/* Pin 2: Current Sighting with Ping */}
         <div className="relative z-10 self-end bg-white/95 px-2 py-1 rounded-md shadow-md border border-slate-200 text-[8px] flex items-center gap-1">
-          <Navigation className="w-3 h-3 text-red-500 fill-red-500" />
+          <div className="relative flex items-center justify-center">
+            <span className="absolute w-4 h-4 rounded-full bg-red-400/50 animate-radar"></span>
+            <Navigation className="w-3 h-3 text-red-500 fill-red-500 relative z-10" />
+          </div>
           <div>
             <strong className="text-red-600 block">Scanned Sighting:</strong>
             <span className="text-slate-600">40m from Home base</span>
@@ -138,8 +164,9 @@ export function LocationScreen() {
         </div>
       </div>
 
-      <div className="pt-2 text-[8px] text-slate-500 text-center">
-        GPS: 18.9894° N, 73.1175° E (Sub-meter accuracy)
+      <div className="pt-2 text-[8px] text-slate-500 text-center flex items-center justify-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-[#289E92] animate-pulse"></span>
+        <span>GPS: 18.9894° N, 73.1175° E (Sub-meter accuracy)</span>
       </div>
     </div>
   );
@@ -152,8 +179,9 @@ export function VaccinationScreen() {
       <div>
         <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
           <span className="text-[10px] font-bold text-[#104C4B]">Vaccination Record</span>
-          <span className="bg-emerald-100 text-emerald-800 text-[8px] font-bold px-1.5 py-0.5 rounded">
-            Valid
+          <span className="bg-emerald-100 text-emerald-800 text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 shadow-xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Valid</span>
           </span>
         </div>
 
@@ -171,11 +199,12 @@ export function VaccinationScreen() {
           <div className="bg-slate-50 p-2 rounded-lg border border-slate-100">
             <span className="text-slate-400 block text-[8px]">Sterilization Status</span>
             <strong className="text-emerald-700 flex items-center gap-1">
-              <Check className="w-3 h-3 text-emerald-600" /> Yes (Ear-Notched Right)
+              <Check className="w-3 h-3 text-emerald-600 stroke-[3]" /> Yes (Ear-Notched Right)
             </strong>
           </div>
 
-          <div className="bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+          <div className="bg-emerald-50 p-2 rounded-lg border border-emerald-200 relative overflow-hidden">
+            <div className="w-full h-full absolute inset-0 bg-gradient-to-r from-transparent via-emerald-200/40 to-transparent animate-beam pointer-events-none"></div>
             <span className="text-emerald-700 block text-[8px] font-semibold">Next Booster Due</span>
             <strong className="text-emerald-900 font-mono">21-May-2025</strong>
           </div>
@@ -194,10 +223,11 @@ export function ReportScreen() {
   return (
     <div className="flex-1 flex flex-col justify-between text-left">
       <div>
-        <div className="text-center pb-1">
+        <div className="text-center pb-1 flex items-center justify-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
           <span className="text-[10px] font-bold text-red-600">Report an Incident</span>
-          <span className="text-[8px] text-slate-400 block">Direct Municipal Squad Alert</span>
         </div>
+        <span className="text-[8px] text-slate-400 block text-center">Direct Municipal Squad Alert</span>
 
         <div className="pt-1.5">
           <span className="text-[8px] font-bold text-slate-600 uppercase block mb-1">Trigger Alert For:</span>
@@ -205,9 +235,9 @@ export function ReportScreen() {
             {['Dog Bite', 'Vaccination', 'Sterilization', 'Malnourished', 'Abandoned', 'Injured'].map((opt, i) => (
               <div 
                 key={i} 
-                className={`py-1 px-1.5 rounded text-center font-semibold border ${
+                className={`py-1 px-1.5 rounded text-center font-semibold border transition-all ${
                   i === 0 
-                    ? 'bg-red-50 text-red-700 border-red-200 font-bold' 
+                    ? 'bg-red-500 text-white border-red-600 font-bold shadow-xs' 
                     : 'bg-slate-50 text-slate-700 border-slate-200'
                 }`}
               >

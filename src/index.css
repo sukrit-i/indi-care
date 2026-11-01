@@ -60,3 +60,54 @@
 .animate-scanline {
   animation: scanline 2.8s ease-in-out infinite alternate;
 }
+
+/* Radar ping for maps */
+@keyframes radar-pulse {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.animate-radar {
+  animation: radar-pulse 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+/* Smooth beam flow for pipeline connector */
+@keyframes beam-flow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.animate-beam {
+  animation: beam-flow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Shimmer gleam */
+@keyframes gleam {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  30%, 100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.animate-gleam {
+  animation: gleam 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Floating micro-motion */
+@keyframes float-subtle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-7px); }
+}
+
+.animate-float {
+  animation: float-subtle 4s ease-in-out infinite;
+}
+
+/* Biometric HUD Corner Pulse */
+@keyframes hud-bracket {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+.animate-hud-bracket {
+  animation: hud-bracket 2.4s ease-in-out infinite;
+}
